@@ -51,26 +51,56 @@ group by
 
 --    5. Poka¿ w jedym zapytaniu sumê p³ac dla adiunktów i asystentów z zespo³u 20 i 30 podsumowuj¹c sumy zarówno 
 --       dla zespo³ów jak i dla asystentów. Poka¿ tylko te podsumowania, które maj¹ wartoœæ wiêksz¹ od 1300
-
---    TODO: poprawiæ by siê nie wyœwietla³o podsumownaie adiunkta
 select 
     p.id_zesp,
     p.etat,
     sum(p.placa_pod)
 from pracownicy p
-where p.id_zesp in (20, 30)
-  and p.etat in ('ADIUNKT', 'ASYSTENT')
+where p.etat in ('ADIUNKT', 'ASYSTENT')
 group by cube(
     p.id_zesp,
     p.etat)
 having 
-        sum(p.placa_pod)>1300 
-    or 
-        grouping(p.etat)=0
+        (id_zesp is null and sum(p.placa_pod)>1300 or id_zesp is not null) -- mo¿na u¿yc grouping_id >0
+    and  
+        (etat is null and sum(p.placa_pod)>1300 or etat is not null)
     
 order by 1, 2            
 ;
 
+select 
+    p.id_zesp,
+    p.etat,
+    sum(p.placa_pod)
+from pracownicy p
+where p.etat in ('ADIUNKT', 'ASYSTENT')
+group by cube(
+    p.id_zesp,
+    p.etat)
+having 
+    grouping_id(id_zesp, etat)>0 and sum(p.placa_pod)>1300
+    or
+    grouping_id(id_zesp, etat)=0
+    
+order by 1, 2            
+;
+
+select 
+    p.id_zesp,
+    p.etat,
+    sum(p.placa_pod)
+from pracownicy p
+where p.etat in ('ADIUNKT', 'ASYSTENT')
+group by cube(
+    p.id_zesp,
+    p.etat)
+having 
+    grouping(id_zesp)+grouping(etat)>0 and sum(p.placa_pod)>1300
+    or
+    grouping(id_zesp)+grouping(etat)=0
+    
+order by 1, 2            
+;
 --    6. Poka¿ miejsca pracy profesorów i adiunktów z zespo³u 20,30 i 40 wraz z podsumowaniami ich sumy placy 
 --       podstawowej i placy dodatkowej. W osobnej kolumnie napisz s³owo „PODSUMOWANIE”, gdy wiersz podsumowuje któr¹œ z grup, wykorzystaj do tego funkcje GROUPING. Skorzystaj te¿ z funkcji DECODE
 
@@ -105,11 +135,12 @@ select
     sum(p.placa_pod) as "suma"
 from pracownicy p
 where p.etat in ('STAZYSTA','SEKRETARKA')
-group by rollup(
+group by cube(
     p.id_zesp,
     p.etat
 )
-having grouping_id(p.id_zesp, p.etat) > 1
+having 
+    grouping_id(p.id_zesp, p.etat) >= 2
 
 
 
