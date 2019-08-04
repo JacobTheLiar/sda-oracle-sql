@@ -1,5 +1,4 @@
-create user rentAdmin IDENTIFIED BY rentPwd
-;
+create user rentAdmin IDENTIFIED BY 'rentPwd';
 
 create table carModel(
     idCarModel int,
@@ -85,6 +84,7 @@ create table promotion(
 create table rent(
     idRent int,
     carId int,
+    promotionId int,
     rentPointIdStart int,
     rentTimeStart timestamp,
     employeeIdStart int,
@@ -93,6 +93,7 @@ create table rent(
     
     primary key (idRent),
     constraint FK_car_rent foreign key (carId) references car(idCar),
+    constraint FK_promotion_rent foreign key (promotionId) references promotion(idPromotion),
     constraint FK_rentPoint_rent foreign key (rentPointIdStart) references rentPoint(idRentPoint),
     constraint FK_employee_rent foreign key (employeeIdStart) references employee(idEmployee)
 );
@@ -100,6 +101,7 @@ create table rent(
 create table rentHistory(
     idRent int,
     carId int,
+    promotionId int,
     rentPointIdStart int,
     rentTimeStart timestamp,
     employeeIdStart int,
@@ -114,19 +116,13 @@ create table rentHistory(
 
     primary key (idRent),
     constraint FK_car_rentHistory foreign key (carId) references car(idCar),
+    constraint FK_promotion_rentHistory foreign key (promotionId) references promotion(idPromotion),
     constraint FK_rentPointStart_rentHistory foreign key (rentPointIdStart) references rentPoint(idRentPoint),
     constraint FK_employeeStart_rentHistory foreign key (employeeIdStart) references employee(idEmployee),
     constraint FK_rentPointEnd_rentHistory foreign key (rentPointIdEnd) references rentPoint(idRentPoint),
     constraint FK_employeeEnd_rentHistor foreign key (employeeIdEnd) references employee(idEmployee)
 );
 
-create table rentPromotion (
-    rentId int,
-    promotionId int,
-    
-    constraint FK_rentHistory_rentPromotion foreign key (rentId) references rentHistory(idRent),
-    constraint FK_promotion_rentPromotion foreign key (promotionId) references promotion(idPromotion)
-);
 
 
 
