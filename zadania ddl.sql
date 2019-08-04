@@ -50,7 +50,7 @@ create table sklep(
 create table produkt(
     idProdukt int,
     nazwa varchar(50),
-    cena numeric,
+    cena numeric(18,2),
     idSklep int,
     
     primary key (idProdukt),
@@ -75,3 +75,11 @@ select
 from produkt p
     join sklep s
         on s.idSklep = p.idSklep;
+        
+        
+-- zmina typu kolumny
+alter table produkt add cenaNowa numeric(18,2); -- dodaj kolumne z nowym typem
+update produkt set cenaNowa = cena;  -- przenieœ cene do nowej ceny
+alter table produkt drop column cena; -- usuñ zepsut¹ kolumnê
+alter table produkt rename column cenaNowa to cena; -- zmiana nazwy kolumny
+update produkt set cena = cena - 0.01;  -- poprawa ceny - tutaj akurat atwa
