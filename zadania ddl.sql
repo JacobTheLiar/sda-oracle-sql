@@ -78,8 +78,13 @@ from produkt p
         
         
 -- zmina typu kolumny
-alter table produkt add cenaNowa numeric(18,2); -- dodaj kolumne z nowym typem
-update produkt set cenaNowa = cena;  -- przenieœ cene do nowej ceny
-alter table produkt drop column cena; -- usuñ zepsut¹ kolumnê
-alter table produkt rename column cenaNowa to cena; -- zmiana nazwy kolumny
-update produkt set cena = cena - 0.01;  -- poprawa ceny - tutaj akurat atwa
+alter table produkt 
+    add cenaNowa numeric(18,2); -- dodaj kolumne z nowym typem
+update produkt set 
+    cenaNowa = cena;  -- przenieœ cene do nowej ceny
+alter table produkt 
+    drop column cena; -- usuñ zepsut¹ kolumnê
+alter table produkt 
+    rename column cenaNowa to cena; -- zmiana nazwy kolumny
+update produkt set 
+    cena = cena - 0.01;  -- poprawa ceny - tutaj akurat atwa
