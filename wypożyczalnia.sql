@@ -50,7 +50,7 @@ create table employee(
     rentPointId int,
     
     primary key (idEmployee),
-    constraint FK_rentPoint_employee foreign key (rentPoint) references rentPoint(idrentpoint)
+    constraint FK_rentPoint_employee foreign key (rentPointId) references rentPoint(idrentpoint)
 );
 
 create table client(
